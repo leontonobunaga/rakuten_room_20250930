@@ -1,0 +1,90 @@
+run:
+  mode: safe
+  headless: false
+  daily_cap: 100
+  min_interval_sec: 90
+  max_interval_sec: 240
+  jitter: 0.25
+  blackout:
+    - { start: "00:00", end: "06:00" }
+  max_errors_per_hour: 3
+  hard_stop_on_error: true
+
+browser:
+  executable_path: "./browsers/chromium/chrome.exe"
+  storage_state: "./data/session.json"
+
+credentials:
+  applicationId: "YOUR_RWS_APP_ID"
+  affiliateId: "YOUR_AFFILIATE_ID"
+
+sources:
+  keywords: ["加湿器", "ワイヤレスイヤホン"]
+  exclude_keywords: ["中古", "アウトレット"]
+  genre_ids: ["100371", "558944"]
+  min_price: 1000
+  max_price: 30000
+  min_review_count: 50
+  min_review_average: 3.8
+  availability_only: true
+
+ranking:
+  genre_weights:
+    default: 1.0
+    "100371": 1.4
+    "558944": 1.3
+  genre_quotas:
+    default: 0
+    "100371": 30
+    "558944": 20
+    others: 50
+  sale_profiles:
+    five_zero_day:
+      weights: { "558944": 1.6 }
+      quotas: { "558944": 30 }
+
+shops:
+  allowlist: ["official_store_1"]
+  denylist: ["ng_shop_foo"]
+
+policy:
+  exceptions:
+    terms: ["非医薬品", "医薬部外品"]
+    regex: []
+  banned:
+    - id: "yakuki_danTei"
+      label: "薬機NG：効果・効能の断定"
+      type: regex
+      pattern: "(痩せる|治る|完治|絶対治|効果覿面|副作用なし)"
+      severity: block
+      replace: ""
+      note: "薬機・景表対策（投稿のガイドライン準拠）"
+    - id: "overclaim"
+      label: "誇大表現"
+      type: regex
+      pattern: "(必ず|絶対|100%|１００％)"
+      severity: replace
+      replace: "おすすめ"
+    - id: "click誘導"
+      label: "クリック依頼表現"
+      type: terms
+      terms: ["必ずクリックして", "ここをクリックして買って"]
+      severity: block
+      replace: ""
+
+copy:
+  variants_per_item: 3
+  add_pr_tag: true
+  banned_phrases_file: "./templates/banned_phrases.txt"
+  hashtag_presets_file: "./templates/hashtags.yaml"
+
+etl:
+  enabled: true
+  watch_dir: "./drop"
+  schedule: monthly
+  csv_mapping:
+    item_code: "商品番号"
+    clicks: "クリック数"
+    purchases: "購入件数"
+    revenue: "売上金額"
+    points: "成果報酬"

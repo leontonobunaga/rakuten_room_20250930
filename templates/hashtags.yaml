@@ -1,0 +1,11 @@
+# Default hashtag presets used by the copy generator.
+default:
+  - "#楽天ROOM"
+  - "#PR"
+seasonal:
+  winter:
+    - "#冬支度"
+    - "#乾燥対策"
+  summer:
+    - "#夏のおすすめ"
+    - "#涼感グッズ"
